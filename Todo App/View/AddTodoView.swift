@@ -16,6 +16,10 @@ struct AddTodoView: View {
   
   let priorities = ["High", "Normal", "Low"]
   
+  @State private var errorShowing = false
+  @State private var errorTitle = ""
+  @State private var errorMessage = ""
+  
     var body: some View {
       NavigationView {
         VStack {
@@ -42,7 +46,13 @@ struct AddTodoView: View {
                 } catch {
                   print(error)
                 }
+              } else {
+                self.errorShowing = true
+                self.errorTitle = "Invalida Name"
+                self.errorMessage = "Enter a valid text\nfor the new todo item."
+                return
               }
+              self.presentationMode.wrappedValue.dismiss()
             } label: {
               Text("Save")
             }
@@ -58,6 +68,9 @@ struct AddTodoView: View {
         } label: {
           Image(systemName: "xmark")
         })
+        .alert(isPresented: $errorShowing) {
+          Alert(title: Text(errorTitle), message: Text(errorMessage), dismissButton: .default(Text("Ok")))
+        }
     } //: NavigationView
   }
 }
